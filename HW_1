@@ -1,0 +1,95 @@
+from datetime import datetime
+
+def get_days_from_today(date):
+    
+    # Отримання поточної дати
+    current_date = datetime.now().date()
+
+    # Перетворення рядка з датою на об'єкт datetime
+    try:
+        given_date = datetime.strptime(date, '%Y-%m-%d').date()
+    except ValueError as e:
+        print(f"Помилка формату дати: {e}. Будь ласка, використовуйте формат 'РРРР-ММ-ДД'.")
+        return None
+
+    # Обчислення різниці між датами
+    delta = current_date - given_date
+
+    # Повернення абсолютного значення кількості днів
+    return abs(delta.days)
+
+# Приклади використання функції
+print(f"Кількість днів між 2021-10-09 і сьогодні: {get_days_from_today('2021-10-09')}")
+print(f"Кількість днів між 21-10-09 і сьогодні: {get_days_from_today('21-10-09')}")
+print(f"Кількість днів між 09.10.2022 і сьогодні: {get_days_from_today('09.10.2022')}")
+
+import random
+
+def get_numbers_ticket(min, max, quantity):
+     # 1. Перевірка параметрів на відповідність заданим обмеженням
+    # Діапазон чисел від 1 до 1000 включно
+    if not (1 <= min <= max <= 1000):
+        return []
+    # Кількість чисел має бути в межах доступного діапазону
+    if not (1 <= quantity <= (max - min + 1)):
+        return []
+
+    # 2. Генерація унікальних випадкових чисел
+    # random.sample() повертає список унікальних елементів
+    # з вказаного діапазону (range) у кількості quantity
+    try:
+        random_numbers = random.sample(range(min, max + 1), quantity)
+    except ValueError:
+        # Обробка помилки, якщо quantity більше ніж доступний діапазон,
+        return []
+
+    # 3. Сортування та повернення результату
+    random_numbers.sort()
+    return random_numbers
+
+
+lottery_numbers_1 = get_numbers_ticket(1, 1000, 9)
+print(f"Ваші лотерейні номери: {lottery_numbers_1}") 
+
+lottery_numbers_2 = get_numbers_ticket(1, 2000, 9)
+print(f"Ваші лотерейні номери: {lottery_numbers_2}")
+
+
+import re
+
+def normalize_phone(phone_number):
+    # Видаляємо всі символи, крім цифр і '+'
+    cleaned_number = re.sub(r'[^\d+]', '', phone_number)
+
+    # Якщо номер не містить міжнародного коду (не починається з '+')
+    if not cleaned_number.startswith('+'):
+        # Якщо номер починається з '0' і має 10 цифр (типовий український формат)
+        if cleaned_number.startswith('0') and len(cleaned_number) == 10:
+            return '+38' + cleaned_number
+        # Якщо номер починається з '80' і має 11 цифр (старий формат)
+        elif cleaned_number.startswith('80') and len(cleaned_number) == 11:
+            return '+38' + cleaned_number[1:]
+        # Додаємо код '+38' за замовчуванням, якщо інший міжнародний код не вказано
+        else:
+            return '+38' + cleaned_number
+    
+    return cleaned_number
+
+raw_numbers = [
+    "067\\t123 4567",
+    "(095) 234-5678\\n",
+    "+380 44 123 4567",
+    "380501234567",
+    "    +38(050)123-32-34",
+    "     0503451234",
+    "(050)8889900",
+    "38050-111-22-22",
+    "38050 111 22 11   ",
+]
+
+for number in raw_numbers:
+    normalized = normalize_phone(number)
+    print(f"Оригінал: {number:<20} | Нормалізований: {normalized}")
+
+
+
