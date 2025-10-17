@@ -16,12 +16,12 @@ def get_days_from_today(date):
     delta = current_date - given_date
 
     # Повернення абсолютного значення кількості днів
-    return abs(delta.days)
+    return (delta.days)
 
 # Приклади використання функції
-print(f"Кількість днів між 2021-10-09 і сьогодні: {get_days_from_today('2021-10-09')}")
-print(f"Кількість днів між 21-10-09 і сьогодні: {get_days_from_today('21-10-09')}")
-print(f"Кількість днів між 09.10.2022 і сьогодні: {get_days_from_today('09.10.2022')}")
+print(get_days_from_today('2020-10-09'))
+print(get_days_from_today('20-10-09'))
+print(get_days_from_today('2025-10-25'))
 
 import random
 
@@ -58,22 +58,20 @@ print(f"Ваші лотерейні номери: {lottery_numbers_2}")
 import re
 
 def normalize_phone(phone_number):
-    # Видаляємо всі символи, крім цифр і '+'
-    cleaned_number = re.sub(r'[^\d+]', '', phone_number)
+   # Видаляємо всі символи, крім цифр і '+'
+    # Спочатку зберігаємо '+', якщо він є на початку
+    if phone_number.strip().startswith('+'):
+        cleaned_number = '+' + ''.join(filter(str.isdigit, phone_number))
+    else:
+        cleaned_number = ''.join(filter(str.isdigit, phone_number))
 
-    # Якщо номер не містить міжнародного коду (не починається з '+')
-    if not cleaned_number.startswith('+'):
-        # Якщо номер починається з '0' і має 10 цифр (типовий український формат)
-        if cleaned_number.startswith('0') and len(cleaned_number) == 10:
-            return '+38' + cleaned_number
-        # Якщо номер починається з '80' і має 11 цифр (старий формат)
-        elif cleaned_number.startswith('80') and len(cleaned_number) == 11:
-            return '+38' + cleaned_number[1:]
-        # Додаємо код '+38' за замовчуванням, якщо інший міжнародний код не вказано
-        else:
-            return '+38' + cleaned_number
-    
-    return cleaned_number
+    # Перевіряємо та додаємо міжнародний код, якщо необхідно
+    if cleaned_number.startswith('380'):
+        return '+' + cleaned_number
+    elif not cleaned_number.startswith('+'):
+        return '+38' + cleaned_number
+    else:
+        return cleaned_number
 
 raw_numbers = [
     "067\\t123 4567",
